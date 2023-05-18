@@ -3,6 +3,8 @@ import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'package:shared_preferences/shared_preferences.dart';
 
+import '../PersonProfile/PersonProfile.dart';
+
 class PeopleScreen extends StatefulWidget {
   @override
   _PeopleScreenState createState() => _PeopleScreenState();
@@ -144,6 +146,10 @@ class _PeopleScreenState extends State<PeopleScreen> {
                       title: Text(person['username']),
                       onTap: () {
                         // Navigate to the person's profile page.
+                        Navigator.push(
+                            context,
+                            MaterialPageRoute(builder: (context) => PersonProfileScreen(person: person)),
+                        );
                       },
                     );
                   },

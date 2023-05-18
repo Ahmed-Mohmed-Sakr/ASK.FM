@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:learningf/screens/AskQuestion/AskQuestion.dart';
-import 'package:learningf/screens/Profile/Profile.dart';
+import 'package:learningf/screens/MyProfile/Profile.dart';
 import 'package:learningf/screens/QuestionDetail/QuestionDetail.dart';
 import 'package:learningf/screens/Settings/Settings.dart';
 import 'package:learningf/screens/homepage/homepage.dart';
