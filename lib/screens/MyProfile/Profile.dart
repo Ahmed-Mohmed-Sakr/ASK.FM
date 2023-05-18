@@ -88,62 +88,94 @@ class _ProfileScreenState extends State<ProfileScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text('Profile'),
-      ),
-      body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            if (_username != "") Text('Username: $_username'),
-            if (_numQuestionsAsked != "")
-              Text('Number of Questions Asked: $_numQuestionsAsked'),
-            if (_numQuestionsAnswered != "")
-              Text('Number of Questions Answered: $_numQuestionsAnswered'),
-            SizedBox(height: 16.0),
-            ToggleButtons(
-              children: <Widget>[
-                Icon(Icons.all_inclusive),
-                Icon(Icons.check),
-                Icon(Icons.clear),
-              ],
-              isSelected: _getFilterSelections(),
-              onPressed: _handleFilterButtonPress,
-            ),
-            SizedBox(height: 16.0),
-            if (_getQuestionsToShow().isNotEmpty)
-              Column(
+      body: CustomScrollView(
+        slivers: <Widget>[
+          SliverAppBar(
+            title: Text('My Profile'),
+            pinned: true,
+            flexibleSpace: Container(
+              // color: Colors.grey[200],
+              padding: EdgeInsets.all(16.0),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisAlignment: MainAxisAlignment.end,
                 children: [
-                  Text(_getQuestionsTitle()),
-                  ListView.builder(
-                    shrinkWrap: true,
-                    itemCount: _getQuestionsToShow().length,
-                    itemBuilder: (context, index) {
-                      final question = _getQuestionsToShow()[index];
-                      return ListTile(
-                        title: Text(question['questionText']),
-                        subtitle: Text(question['answer'] ?? 'Not yet answered'),
-                        onTap: () {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                                builder: (context) =>
-                                    QuestionDetailScreen(
-                                        questionId: question['id'])),
-                          )
-                              .then((value) {
-                            if (value == true) {
-                              _fetchProfile();
-                            }
-                          });
-                        },
-                      );
-                    },
+                  // Text('Username: $_username', style: TextStyle(fontSize: 18.0, fontWeight: FontWeight.bold)),
+                  SizedBox(height: 8.0),
+                  Row(
+                    children: [
+                      SizedBox(width: 16.0),
+                      Row(
+                        children: [
+                          Icon(Icons.check_circle, color: Colors.teal),
+                          SizedBox(width: 4.0),
+                          Text('$_numQuestionsAnswered'),
+                        ],
+                      ),
+                      SizedBox(width: 16.0),
+                      Row(
+                        children: [
+                          Icon(Icons.help_outline, color: Colors.grey),
+                          SizedBox(width: 4.0),
+                          Text('${_numQuestionsAsked - _numQuestionsAnswered}'),
+                        ],
+                      ),
+                    ],
                   ),
                 ],
               ),
-          ],
-        ),
+            ),
+            bottom: PreferredSize(
+              preferredSize: Size.fromHeight(48.0),
+              child: ToggleButtons(
+                children: <Widget>[
+                  Icon(Icons.all_inclusive),
+                  Icon(Icons.check),
+                  Icon(Icons.clear),
+                ],
+                isSelected: _getFilterSelections(),
+                onPressed: _handleFilterButtonPress,
+              ),
+            ),
+          ),
+          SliverList(
+            delegate: SliverChildListDelegate([
+              if (_getQuestionsToShow().isNotEmpty)
+                Column(
+                  children: [
+                    SizedBox(height: 16.0),
+                    Text(_getQuestionsTitle()),
+                    ListView.builder(
+                      shrinkWrap: true,
+                      physics: NeverScrollableScrollPhysics(),
+                      itemCount: _getQuestionsToShow().length,
+                      itemBuilder: (context, index) {
+                        final question = _getQuestionsToShow()[index];
+                        return ListTile(
+                          title: Text(question['questionText']),
+                          subtitle: Text(question['answer'] ?? 'Not yet answered'),
+                          onTap: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) =>
+                                      QuestionDetailScreen(
+                                          questionId: question['id'])),
+                            )
+                                .then((value) {
+                              if (value == true) {
+                                _fetchProfile();
+                              }
+                            });
+                          },
+                        );
+                      },
+                    ),
+                  ],
+                ),
+            ]),
+          ),
+        ],
       ),
     );
   }
