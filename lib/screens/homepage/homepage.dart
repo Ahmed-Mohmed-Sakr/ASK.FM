@@ -17,6 +17,7 @@ class _HomeScreenState extends State<HomeScreen> {
   bool _isLoading = false;
 
   String _errorMessage = "";
+  String _userNmae = "";
 
   @override
   void initState() {
@@ -32,6 +33,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
     final prefs = await SharedPreferences.getInstance();
     final userToken = prefs.getString('userToken');
+    _userNmae = prefs.getString('userName')!;
 /*
     final response = await http.get('https://your-api-endpoint.com/questions' as Uri,
         headers: {'Authorization': 'Bearer $userToken'});
@@ -114,7 +116,6 @@ class _HomeScreenState extends State<HomeScreen> {
       ];
       _isLoading = false;
     });
-
   }
 
   Future<void> _logout() async {
@@ -151,55 +152,103 @@ class _HomeScreenState extends State<HomeScreen> {
         padding: EdgeInsets.all(16.0),
         child: Column(
           children: <Widget>[
-            ElevatedButton(
-              child: Text('Ask a Question'),
-              onPressed: () {
-                Navigator.pushNamed(context, '/AskQuestion')
-                .then((value) {
-                  if (value == true) {
-                    _fetchQuestions();
-                  }
-                });
-              },
+            Text(
+              'Welcome, ${_userNmae}!',
+              style: TextStyle(fontSize: 24.0, fontWeight: FontWeight.bold),
             ),
+            SizedBox(height: 12.0),
+            // ElevatedButton(
+            //   child: Text('Ask a Question'),
+            //   onPressed: () {
+            //     Navigator.pushNamed(context, '/AskQuestion')
+            //         .then((value) {
+            //       if (value == true) {
+            //         _fetchQuestions();
+            //       }
+            //     });
+            //   },
+            // ),
             SizedBox(height: 16.0),
             if (_isLoading)
               CircularProgressIndicator()
-            else if (_errorMessage != "")
-              Text(
-                _errorMessage,
-                style: TextStyle(color: Colors.red),
-              )
             else
-              Expanded(
-                child: ListView.builder(
-                  itemCount: _questions.length,
-                  itemBuilder: (context, index) {
-                    final question = _questions[index];
-                    return ListTile(
-                      title: Text(question['text']),
-                      subtitle: Text(
-                          'Asked By: ${question['askedBy']['username']}, Answered By: ${question['answeredBy'] != null ? question['answeredBy']['username'] : 'None'}'),
-                      onTap: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) => QuestionDetailScreen(
-                                  questionId: question['id'])),
-                        )
-                        .then((value) {
-                          if (value == true) {
-                            _fetchQuestions();
-                          }
-                        });
-                      },
-                    );
-                  },
+              if (_errorMessage != "")
+                Text(
+                  _errorMessage,
+                  style: TextStyle(color: Colors.red),
+                )
+              else
+                Expanded(
+                  child: ListView.builder(
+                    itemCount: _questions.length,
+                    itemBuilder: (context, index) {
+                      final question = _questions[index];
+                      return ListTile(
+                        title: Text(question['text']),
+                        subtitle: Text(
+                            'Asked By: ${question['askedBy']['username']}, Answered By: ${question['answeredBy'] !=
+                                null
+                                ? question['answeredBy']['username']
+                                : 'None'}'),
+                        onTap: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) =>
+                                    QuestionDetailScreen(
+                                        questionId: question['id'])),
+                          )
+                              .then((value) {
+                            if (value == true) {
+                              _fetchQuestions();
+                            }
+                          });
+                        },
+                      );
+                    },
+                  ),
                 ),
-              ),
           ],
         ),
       ),
+      bottomNavigationBar: Container(
+        padding: EdgeInsets.symmetric(horizontal: 0, vertical: 4.0),
+        child: BottomAppBar(
+          shape: CircularNotchedRectangle(),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceAround,
+            children: <Widget>[
+              IconButton(
+                icon: Icon(Icons.home),
+                onPressed: () {
+                  // Navigate to the home page (this page).
+                },
+              ),
+              IconButton(
+                icon: Icon(Icons.people),
+                onPressed: () {
+                  // Navigate to the page with search and contacts.
+                },
+              ),
+            ],
+          ),
+        ),
+      ),
+      floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
+      floatingActionButton: Container(
+        child: FloatingActionButton(
+          child: Icon(Icons.add),
+          onPressed: () {
+            Navigator.pushNamed(context, '/AskQuestion')
+                .then((value) {
+              if (value == true) {
+                _fetchQuestions();
+              }
+            });
+          },
+        ),
+      ),
+      // Add padding directly to the Scaffold widget
     );
   }
 }
