@@ -5,6 +5,7 @@ import 'package:learningf/screens/QuestionDetail/QuestionDetail.dart';
 import 'package:learningf/screens/Settings/Settings.dart';
 import 'package:learningf/screens/homepage/homepage.dart';
 import 'package:learningf/screens/login/login.dart';
+import 'package:learningf/screens/people/people.dart';
 import 'package:learningf/screens/signup/signup.dart';
 
 class App extends StatelessWidget {
@@ -21,6 +22,7 @@ class App extends StatelessWidget {
         '/AskQuestion': (context) => AskQuestionScreen(),
         '/Settings':(context) => SettingsScreen(),
         '/Profile':(context) => ProfileScreen(),
+        '/people':(context) => PeopleScreen(),
       },
     );
   }

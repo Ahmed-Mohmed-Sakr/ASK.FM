@@ -227,7 +227,7 @@ class _HomeScreenState extends State<HomeScreen> {
               IconButton(
                 icon: Icon(Icons.people),
                 onPressed: () {
-                  // Navigate to the page with search and contacts.
+                  Navigator.pushNamed(context, '/people');
                 },
               ),
             ],
