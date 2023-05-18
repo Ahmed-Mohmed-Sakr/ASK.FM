@@ -3,6 +3,8 @@ import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'package:shared_preferences/shared_preferences.dart';
 
+import '../QuestionDetail/QuestionDetail.dart';
+
 class PersonProfileScreen extends StatefulWidget {
   final dynamic person;
 
@@ -187,7 +189,18 @@ class _PersonProfileScreenState extends State<PersonProfileScreen> {
                       title: Text(question['questionText']),
                       subtitle: Text(question['answer'] ?? 'Not yet answered'),
                       onTap: () {
-                        // Show the answer to the question.
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) =>
+                                  QuestionDetailScreen(
+                                      questionId: question['id'])),
+                        )
+                            .then((value) {
+                          if (value == true) {
+                            _fetchQuestions();
+                          }
+                        });
                       },
                     );
                   },
