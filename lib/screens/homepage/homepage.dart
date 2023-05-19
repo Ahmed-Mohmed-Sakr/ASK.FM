@@ -127,7 +127,8 @@ class _HomeScreenState extends State<HomeScreen> {
                                 builder: (context) =>
                                     QuestionDetailScreen(
                                         questionId: question['id'],
-                                        questionText: question["questionText"],
+                                        questionText: question['questionText'],
+                                        answerText: question['answerText']
                                     )
                             ),
                           )

@@ -162,6 +162,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                       QuestionDetailScreen(
                                         questionId: question['id'],
                                         questionText: question["questionText"],
+                                          answerText: question['answerText']
                                       )
                               ),
                             )

@@ -196,6 +196,7 @@ class _PersonProfileScreenState extends State<PersonProfileScreen> {
                                   QuestionDetailScreen(
                                     questionId: question['id'],
                                     questionText: question["questionText"],
+                                      answerText: question['answerText']
                                   )
                           ),
                         )
