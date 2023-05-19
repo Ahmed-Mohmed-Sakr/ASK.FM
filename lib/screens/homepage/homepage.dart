@@ -17,7 +17,7 @@ class _HomeScreenState extends State<HomeScreen> {
   bool _isLoading = false;
 
   String _errorMessage = "";
-  String _userNmae = "";
+  String _userNmae = "In ASK.FM";
 
   @override
   void initState() {
@@ -33,7 +33,6 @@ class _HomeScreenState extends State<HomeScreen> {
 
     final prefs = await SharedPreferences.getInstance();
     final userToken = prefs.getString('userToken');
-    _userNmae = prefs.getString('userName')!;
 /*
     final response = await http.get('https://your-api-endpoint.com/questions' as Uri,
         headers: {'Authorization': 'Bearer $userToken'});

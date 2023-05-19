@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:http/http.dart' as http;
+// import 'package:http/http.dart' as http;
 import 'dart:convert';
+import 'package:http/browser_client.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class LoginScreen extends StatefulWidget {
@@ -23,29 +24,36 @@ class _LoginScreenState extends State<LoginScreen> {
       _isLoading = true;
       _errorMessage = "";
     });
-/*
-    final response = await http.post('https://your-api-endpoint.com/login' as Uri,
-        body: {'email': _email, 'password': _password});
+
+    print(_email);
+    print(_password);
+    final client = BrowserClient();
+    final response = await client.post(
+      Uri.parse('https://askme-service.onrender.com/auth/authenticate'),
+      headers: {'Content-Type': 'application/json'},
+      body: json.encode({'email': _email, 'password': _password}),
+    );
+
+    print("----------------------------------");
+    print(response.statusCode);
+    print(response.body);
 
     if (response.statusCode == 200) {
       final data = json.decode(response.body);
-*/
+
     // Save user data to local storage
     final prefs = await SharedPreferences.getInstance();
-    await prefs.setString('userToken', "lollll" /*data['token']*/);
-    await prefs.setString('userName', "Sakr" /*data['name']*/);
+    await prefs.setString('userToken', data['token']);
+    // await prefs.setString('userName', "Sakr" /*data['name']*/);
 
     // Navigate to main app screen
     Navigator.pushReplacementNamed(context, '/home');
-/*    } else {
-      final data = json.decode(response.body);
+    } else {
       setState(() {
         _isLoading = false;
-        _errorMessage = data['message'];
+        _errorMessage = "error in email or password";
       });
     }
- */
-
 
   }
 

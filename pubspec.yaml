@@ -30,7 +30,8 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
-  http: ^0.13.4
+  http: ^0.13.6
+  url_launcher: ^6.1.11
   shared_preferences: ^2.0.8
 
 
@@ -41,7 +42,8 @@ dependencies:
 dev_dependencies:
   flutter_test:
     sdk: flutter
-  http: ^0.13.4
+  http: ^0.13.6
+  url_launcher: ^6.1.11
   shared_preferences: ^2.0.8
   # The "flutter_lints" package below contains a set of recommended lints to
   # encourage good coding practices. The lint set provided by the package is

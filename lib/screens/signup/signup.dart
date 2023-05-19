@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:http/http.dart' as http;
+// import 'package:http/http.dart' as http;
 import 'dart:convert';
+import 'package:http/browser_client.dart';
 
 class SignupScreen extends StatefulWidget {
   @override
@@ -23,22 +24,35 @@ class _SignupScreenState extends State<SignupScreen> {
       _isLoading = true;
       _errorMessage = "";
     });
-/*
-    final response = await http.post('https://your-api-endpoint.com/signup' as Uri,
-        body: {'name': _name, 'email': _email, 'password': _password});
+    print(_name);
+    print(_email);
+    print(_password);
+    final client = BrowserClient();
+    final response = await client.post(
+      Uri.parse('https://askme-service.onrender.com/auth/register'),
+      headers: {'Content-Type': 'application/json'},
+      body: json.encode(
+          {
+            'userName': _name,
+            'email': _email,
+            'password': _password
+          }
+      ),
+    );
+    print("----------------------------------");
+    print(response.statusCode);
+    print(response.body);
 
-    if (response.statusCode == 201) {
-
- */
+    if (response.statusCode == 200) {
       // Navigate to login screen
       Navigator.pushReplacementNamed(context, '/login');
-    /*} else {
-      final data = json.decode(response.body);
+    } else {
+      // final data = json.decode(response.body);
       setState(() {
         _isLoading = false;
-        _errorMessage = data['message'];
+        _errorMessage = "error in userName or Email is already used";
       });
-    }*/
+    }
   }
 
   @override
