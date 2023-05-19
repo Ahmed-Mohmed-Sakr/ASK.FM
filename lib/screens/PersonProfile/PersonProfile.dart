@@ -194,7 +194,10 @@ class _PersonProfileScreenState extends State<PersonProfileScreen> {
                           MaterialPageRoute(
                               builder: (context) =>
                                   QuestionDetailScreen(
-                                      questionId: question['id'])),
+                                    questionId: question['id'],
+                                    questionText: question["questionText"],
+                                  )
+                          ),
                         )
                             .then((value) {
                           if (value == true) {

@@ -4,8 +4,9 @@ import 'dart:convert';
 import 'package:shared_preferences/shared_preferences.dart';
 class QuestionDetailScreen extends StatefulWidget {
   final String questionId;
+  final String questionText;
 
-  QuestionDetailScreen({required this.questionId});
+  QuestionDetailScreen({required this.questionId,required this.questionText});
 
   @override
   _QuestionDetailScreenState createState() => _QuestionDetailScreenState();
