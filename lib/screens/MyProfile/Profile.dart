@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:http/browser_client.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -11,6 +12,11 @@ class ProfileScreen extends StatefulWidget {
 }
 
 class _ProfileScreenState extends State<ProfileScreen> {
+
+  // Add these two state variables
+  bool _isLoading = false;
+  String _errorMessage = "";
+
   String _username = "";
   int _numQuestionsAsked = 0;
   int _numQuestionsAnswered = 0;
@@ -28,61 +34,66 @@ class _ProfileScreenState extends State<ProfileScreen> {
   }
 
   Future<void> _fetchProfile() async {
-    /*
+
+    setState(() {
+      _isLoading = true;
+      _errorMessage = "";
+    });
+
     final prefs = await SharedPreferences.getInstance();
     final userToken = prefs.getString('userToken');
 
-    final response = await http.get(
-      'https://your-api-endpoint.com/profile' as Uri,
+
+    final client = BrowserClient();
+    final response = await client.get(
+      Uri.parse(
+          'https://askme-service.onrender.com/answers/my'),
       headers: {'Authorization': 'Bearer $userToken'},
     );
 
     if (response.statusCode == 200) {
       final data = json.decode(response.body);
       setState(() {
-        _username = data['username'];
-        _numQuestionsAsked = data['numQuestionsAsked'];
-        _numQuestionsAnswered = data['numQuestionsAnswered'];
-        _allQuestions = data['questions'];
-        _questionsAnswered = _allQuestions.where((question) => question['answer'] != null).toList();
-        _questionsUnanswered = _allQuestions.where((question) => question['answer'] == null).toList();
+        _username = "Sakr";
+        _allQuestions = data;
+        _questionsAnswered = data;
+        _numQuestionsAsked = _allQuestions.length;
+        _numQuestionsAnswered = _questionsAnswered.length;
       });
-    }*/
+    }else {
+      setState(() {
+        _isLoading = false;
+        _errorMessage = "Error fetching profile data";
+      });
+    }
 
-    setState(() {
-      _username = "Sakr";
-      _numQuestionsAsked = 0;
-      _numQuestionsAnswered = 0;
-      _allQuestions = [
-        {
-          'id': '1',
-          'questionText': 'What is your favorite color?',
-          'answer': null,
-        },
-        {
-          'id': '2',
-          'questionText': 'What is your favorite food?',
-          'answer': null,
-        },
-        {
-          'id': '3',
-          'questionText': 'What is your favorite movie?',
-          'answer': 'The Godfather',
-        },
-        {
-          'id': '4',
-          'questionText': 'What is your favorite book?',
-          'answer': 'To Kill a Mockingbird',
-        },
-        {
-          'id': '5',
-          'questionText': 'What is your favorite hobby?',
-          'answer': 'Playing guitar',
-        },
-      ];
-      _questionsAnswered = _allQuestions.where((question) => question['answer'] != null).toList();
-      _questionsUnanswered = _allQuestions.where((question) => question['answer'] == null).toList();
-    });
+    final client2 = BrowserClient();
+    final response2 = await client2.get(
+      Uri.parse(
+          'https://askme-service.onrender.com/questions/unanswered'),
+      headers: {'Authorization': 'Bearer $userToken'},
+    );
+
+    if (response2.statusCode == 200) {
+      final data = json.decode(response2.body);
+      setState(() {
+        _username = "Sakr";
+        _questionsUnanswered = _questionsUnanswered.map((question) {
+          Map<String, dynamic> modifiedQuestion = Map.from(question);
+          modifiedQuestion["answerText"] = "";
+          return modifiedQuestion;
+        }).toList();
+        _allQuestions.addAll(_questionsUnanswered);
+        _numQuestionsAsked = _allQuestions.length;
+      });
+    }else {
+      setState(() {
+        _isLoading = false;
+        _errorMessage = "Error fetching profile data";
+      });
+    }
+
+
   }
 
   @override
@@ -153,7 +164,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                         final question = _getQuestionsToShow()[index];
                         return ListTile(
                           title: Text(question['questionText']),
-                          subtitle: Text(question['answer'] ?? 'Not yet answered'),
+                          subtitle: Text(question['answerText'] == "" ? 'Not yet answered' : question['answerText']),
                           onTap: () {
                             Navigator.push(
                               context,
@@ -176,6 +187,15 @@ class _ProfileScreenState extends State<ProfileScreen> {
                       },
                     ),
                   ],
+                ),
+              if (_isLoading) Center(child: CircularProgressIndicator()),
+              if (_errorMessage.isNotEmpty)
+                Padding(
+                  padding: EdgeInsets.all(16.0),
+                  child: Text(
+                    _errorMessage,
+                    style: TextStyle(color: Colors.red),
+                  ),
                 ),
             ]),
           ),
