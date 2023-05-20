@@ -44,7 +44,9 @@ class _LoginScreenState extends State<LoginScreen> {
     // Save user data to local storage
     final prefs = await SharedPreferences.getInstance();
     await prefs.setString('userToken', data['token']);
-    await prefs.setString('userEmail', _email);
+    await prefs.setString('userEmail', data['email']);
+      await prefs.setString('userName', data['userName']);
+      await prefs.setString('id', data['id'].toString());
 
     // Navigate to main app screen
     Navigator.pushReplacementNamed(context, '/home');
