@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:http/browser_client.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -12,7 +13,7 @@ class _AskQuestionScreenState extends State<AskQuestionScreen> {
   final _formKey = GlobalKey<FormState>();
 
   String _question = "";
-
+  int userID = 0;
   bool _isLoading = false;
 
   String _errorMessage = "";
@@ -24,20 +25,44 @@ class _AskQuestionScreenState extends State<AskQuestionScreen> {
       });
       final prefs = await SharedPreferences.getInstance();
       final userToken = prefs.getString('userToken');
-/*
-      final response = await http.post('https://your-api-endpoint.com/questions' as Uri,
-          headers: {'Authorization': 'Bearer $userToken'},
-          body: {'text': _question});
+      final userEmail = prefs.getString("userEmail");
 
-      if (response.statusCode == 200) {*/
-        Navigator.pop(context, true);
-      // } else {
-      //   final data = json.decode(response.body);
-      //   setState(() {
-      //     _isLoading = false;
-      //     _errorMessage = data['message'];
-      //   });
-      // }
+      final client = BrowserClient();
+      final response = await client.get(
+        Uri.parse(
+            'https://askme-service.onrender.com/users/email?email=${userEmail}'),
+        headers: {'Authorization': 'Bearer $userToken'},
+      );
+
+      if (response.statusCode == 200) {
+        final data = json.decode(response.body);
+        userID = data['id'];
+
+        // send qution now
+        final client2 = BrowserClient();
+        final response2 = await client2.post(
+          Uri.parse('https://askme-service.onrender.com/questions'),
+          headers: {'Authorization': 'Bearer $userToken'},
+          body: json.encode({
+            'recipientId': userID,
+            'questionText': _question,
+            'anonymity': true
+          }),
+        );
+        if (response.statusCode == 200) {
+          Navigator.pop(context, true);
+        } else {
+          setState(() {
+            _isLoading = false;
+            _errorMessage = "error in fetching user data";
+          });
+        }
+      } else {
+        setState(() {
+          _isLoading = false;
+          _errorMessage = "error in fetching user data";
+        });
+      }
     }
   }
 
