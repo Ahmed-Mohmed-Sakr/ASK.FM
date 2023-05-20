@@ -37,12 +37,10 @@ class _HomeScreenState extends State<HomeScreen> {
     _userNmae = prefs.getString('userName')!;
     // await prefs.getString('id');
 
-    // final response = await http.get('https://your-api-endpoint.com/questions' as Uri,
-    //     headers: {'Authorization': 'Bearer $userToken'});
 
     final client = BrowserClient();
     final response = await client.get(
-      Uri.parse('https://askme-service.onrender.com/auth/authenticate'),
+      Uri.parse('https://askme-service.onrender.com/answers/my'),
         headers: {'Authorization': 'Bearer $userToken'}
     );
 
@@ -128,7 +126,7 @@ class _HomeScreenState extends State<HomeScreen> {
                             MaterialPageRoute(
                                 builder: (context) =>
                                     QuestionDetailScreen(
-                                        questionId: question['id'],
+                                        questionId: question['id'].toString(),
                                         questionText: question['questionText'],
                                         answerText: question['answerText']
                                     )

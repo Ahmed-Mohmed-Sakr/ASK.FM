@@ -25,7 +25,6 @@ class _AskQuestionScreenState extends State<AskQuestionScreen> {
       final prefs = await SharedPreferences.getInstance();
       final userToken = prefs.getString('userToken');
       final userID = prefs.getString("id");
-
       // send qution now
       final client = BrowserClient();
       final response = await client.post(
@@ -33,10 +32,11 @@ class _AskQuestionScreenState extends State<AskQuestionScreen> {
         headers: {'Authorization': 'Bearer $userToken'},
         body: json.encode({
           'recipientId': userID,
-          'questionText': _question,
+          'questionText': 'thanks',
           'anonymity': true
         }),
       );
+      print(response.body);
       if (response.statusCode == 200) {
         Navigator.pop(context, true);
       } else {

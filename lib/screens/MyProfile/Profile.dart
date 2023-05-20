@@ -17,7 +17,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
   bool _isLoading = false;
   String _errorMessage = "";
 
-  String _username = "";
   int _numQuestionsAsked = 0;
   int _numQuestionsAnswered = 0;
   List<dynamic> _allQuestions = [];
@@ -54,9 +53,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
     if (response.statusCode == 200) {
       final data = json.decode(response.body);
       setState(() {
-        _username = "Sakr";
-        _allQuestions = data;
         _questionsAnswered = data;
+        _allQuestions.addAll(List.from(_questionsAnswered));;
         _numQuestionsAsked = _allQuestions.length;
         _numQuestionsAnswered = _questionsAnswered.length;
       });
@@ -66,7 +64,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
         _errorMessage = "Error fetching profile data";
       });
     }
-
     final client2 = BrowserClient();
     final response2 = await client2.get(
       Uri.parse(
@@ -77,14 +74,15 @@ class _ProfileScreenState extends State<ProfileScreen> {
     if (response2.statusCode == 200) {
       final data = json.decode(response2.body);
       setState(() {
-        _username = "Sakr";
+        _questionsUnanswered = data;
         _questionsUnanswered = _questionsUnanswered.map((question) {
           Map<String, dynamic> modifiedQuestion = Map.from(question);
           modifiedQuestion["answerText"] = "";
           return modifiedQuestion;
         }).toList();
-        _allQuestions.addAll(_questionsUnanswered);
+        _allQuestions.addAll(List.from(_questionsUnanswered));
         _numQuestionsAsked = _allQuestions.length;
+        _isLoading = false;
       });
     }else {
       setState(() {
@@ -92,7 +90,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
         _errorMessage = "Error fetching profile data";
       });
     }
-
 
   }
 
@@ -171,7 +168,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                               MaterialPageRoute(
                                   builder: (context) =>
                                       QuestionDetailScreen(
-                                        questionId: question['id'],
+                                        questionId: question['id'].toString(),
                                         questionText: question["questionText"],
                                           answerText: question['answerText']
                                       )
@@ -189,7 +186,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   ],
                 ),
               if (_isLoading) Center(child: CircularProgressIndicator()),
-              if (_errorMessage.isNotEmpty)
+              if (_errorMessage != "")
                 Padding(
                   padding: EdgeInsets.all(16.0),
                   child: Text(

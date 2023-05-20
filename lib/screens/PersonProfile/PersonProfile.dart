@@ -105,7 +105,7 @@ class _PersonProfileScreenState extends State<PersonProfileScreen> {
 
     return Scaffold(
       appBar: AppBar(
-        title: Text(widget.person['username']),
+        title: Text(widget.person['userName']),
       ),
       body: Padding(
         padding: EdgeInsets.all(16.0),
@@ -159,7 +159,7 @@ class _PersonProfileScreenState extends State<PersonProfileScreen> {
                           MaterialPageRoute(
                               builder: (context) =>
                                   QuestionDetailScreen(
-                                    questionId: question['id'],
+                                    questionId: question['id'].toString(),
                                     questionText: question["questionText"],
                                       answerText: question['answerText']
                                   )

@@ -44,15 +44,15 @@ class _QuestionDetailScreenState extends State<QuestionDetailScreen> {
       body: json.encode({'questionId': widget.questionId, 'answerText': _answerController.text}),
     );
 
+    print(response.statusCode);
 
     if (response.statusCode == 200) {
       _answerController.clear();
-      final data = json.decode(response.body);
+      final responseData = json.decode(response.body);
       setState(() {
-        widget.answerText = data['answerText'];
+        widget.answerText = responseData['answerText'];
       });
     } else {
-      final data = json.decode(response.body);
       setState(() {
         _errorMessage = "error in sending data";
       });
@@ -121,7 +121,7 @@ class _QuestionDetailScreenState extends State<QuestionDetailScreen> {
                 ],
               ),
             SizedBox(height: 16.0),
-            if (widget.answerText != "")
+            if (widget.answerText == "")
             Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [

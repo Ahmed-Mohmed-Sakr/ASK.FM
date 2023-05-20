@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:http/browser_client.dart';
-import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -59,7 +58,7 @@ class _PeopleScreenState extends State<PeopleScreen> {
   Widget build(BuildContext context) {
     final filteredPeople = _people
         .where((person) =>
-        person['username'].toLowerCase().contains(_searchQuery.toLowerCase()))
+        person['userName'].toLowerCase().contains(_searchQuery.toLowerCase()))
         .toList();
 
     return Scaffold(
