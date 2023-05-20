@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:http/browser_client.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -32,71 +33,26 @@ class _PeopleScreenState extends State<PeopleScreen> {
 
     final prefs = await SharedPreferences.getInstance();
     final userToken = prefs.getString('userToken');
-/*
-    final response = await http.get(
-      'https://your-api-endpoint.com/people' as Uri,
+
+    final client = BrowserClient();
+    final response = await client.get(
+      Uri.parse('https://askme-service.onrender.com/users/all'),
       headers: {'Authorization': 'Bearer $userToken'},
     );
 
     if (response.statusCode == 200) {
       final data = json.decode(response.body);
       setState(() {
-        _people = data['people'];
+        _people = data;
         _isLoading = false;
       });
     } else {
-      final data = json.decode(response.body);
       setState(() {
         _isLoading = false;
-        _errorMessage = data['message'];
+        _errorMessage = "error in fetching users";
       });
     }
- */
-    setState(() {
-      _people =  [
-        {
-          'id': '1',
-          'username': 'Alice',
-          'avatarUrl': 'https://example.com/avatar.png',
-        },
-        {
-          'id': '2',
-          'username': 'Bob',
-          'avatarUrl': 'https://example.com/avatar.png',
-        },
-        {
-          'id': '3',
-          'username': 'Charlie',
-          'avatarUrl': 'https://example.com/avatar.png',
-        },
-        {
-          'id': '4',
-          'username': 'Dave',
-          'avatarUrl': 'https://example.com/avatar.png',
-        },
-        {
-          'id': '5',
-          'username': 'Eve',
-          'avatarUrl': 'https://example.com/avatar.png',
-        },
-        {
-          'id': '6',
-          'username': 'Frank',
-          'avatarUrl': 'https://example.com/avatar.png',
-        },
-        {
-          'id': '7',
-          'username': 'Grace',
-          'avatarUrl': 'https://example.com/avatar.png',
-        },
-        {
-          'id': '8',
-          'username': 'Henry',
-          'avatarUrl': 'https://example.com/avatar.png',
-        },
-      ];
-      _isLoading = false;
-    });
+
   }
 
   @override
@@ -143,7 +99,7 @@ class _PeopleScreenState extends State<PeopleScreen> {
                   itemBuilder: (context, index) {
                     final person = filteredPeople[index];
                     return ListTile(
-                      title: Text(person['username']),
+                      title: Text(person['userName']),
                       onTap: () {
                         // Navigate to the person's profile page.
                         Navigator.push(
