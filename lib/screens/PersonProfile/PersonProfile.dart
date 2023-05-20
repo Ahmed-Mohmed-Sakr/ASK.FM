@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:http/browser_client.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -33,65 +34,30 @@ class _PersonProfileScreenState extends State<PersonProfileScreen> {
       _isLoading = true;
       _errorMessage = "";
     });
-/*
+
     final prefs = await SharedPreferences.getInstance();
     final userToken = prefs.getString('userToken');
 
-    final response = await http.get(
-      'https://your-api-endpoint.com/questions?personId=${widget.person['id']}' as Uri,
+    final client = BrowserClient();
+    final response = await client.get(
+      Uri.parse('https://askme-service.onrender.com/answers/user/${widget.person['id']}'),
       headers: {'Authorization': 'Bearer $userToken'},
     );
 
     if (response.statusCode == 200) {
       final data = json.decode(response.body);
       setState(() {
-        _questions = data['questions'];
+        _questions = data;
         _isLoading = false;
       });
     } else {
       final data = json.decode(response.body);
       setState(() {
         _isLoading = false;
-        _errorMessage = data['message'];
+        _errorMessage = "error in fetching data :(:(";
       });
     }
 
- */
-    setState(() {
-      _questions =  [
-        {
-          'id': '1',
-          'questionText': 'What is your favorite color?',
-          'personId': '1',
-          'answer': 'Blue',
-        },
-        {
-          'id': '2',
-          'questionText': 'What is your favorite food?',
-          'personId': '1',
-          'answer': 'Pizza',
-        },
-        {
-          'id': '3',
-          'questionText': 'What is your favorite movie?',
-          'personId': '1',
-          'answer': 'The Godfather',
-        },
-        {
-          'id': '4',
-          'questionText': 'What is your favorite book?',
-          'personId': '1',
-          'answer': null,
-        },
-        {
-          'id': '5',
-          'questionText': 'What is your favorite hobby?',
-          'personId': '1',
-          'answer': null,
-        },
-      ];
-      _isLoading = false;
-    });
   }
 
   Future<void> _postQuestion(String questionText) async {
@@ -99,36 +65,35 @@ class _PersonProfileScreenState extends State<PersonProfileScreen> {
       _isLoading = true;
       _errorMessage = "";
     });
-/*
+
     final prefs = await SharedPreferences.getInstance();
     final userToken = prefs.getString('userToken');
 
-    final response = await http.post(
-      'https://your-api-endpoint.com/questions' as Uri,
+
+    final client = BrowserClient();
+    final response = await client.post(
+      Uri.parse('https://askme-service.onrender.com/questions'),
       headers: {'Authorization': 'Bearer $userToken'},
-      body: {
+      body: json.encode({
+        'recipientId': widget.person['id'],
         'questionText': questionText,
-        'personId': widget.person['id'],
-      },
+        'anonymity': true
+      }),
     );
 
     if (response.statusCode == 201) {
-      final data = json.decode(response.body);
       setState(() {
-        _questions.add(data['question']);
+        _fetchQuestions();
+        _errorMessage = "DONE";
         _isLoading = false;
       });
     } else {
-      final data = json.decode(response.body);
       setState(() {
         _isLoading = false;
-        _errorMessage = data['message'];
+        _errorMessage = "un expected error :( , we cant send your question";
       });
-    }*/
-    setState(() {
-      // _questions.add(data['question']);
-      _isLoading = false;
-    });
+    }
+
   }
 
   @override
@@ -187,7 +152,7 @@ class _PersonProfileScreenState extends State<PersonProfileScreen> {
                     final question = filteredQuestions[index];
                     return ListTile(
                       title: Text(question['questionText']),
-                      subtitle: Text(question['answer'] ?? 'Not yet answered'),
+                      subtitle: Text(question['answerText'] ),
                       onTap: () {
                         Navigator.push(
                           context,
