@@ -40,13 +40,14 @@ class _QuestionDetailScreenState extends State<QuestionDetailScreen> {
     final client = BrowserClient();
     final response = await client.post(
         Uri.parse('https://askme-service.onrender.com/answers'),
-        headers: {'Authorization': 'Bearer $userToken'},
+        headers: {'Authorization': 'Bearer $userToken',
+          'Content-Type': 'application/json'},
       body: json.encode({'questionId': widget.questionId, 'answerText': _answerController.text}),
     );
 
     print(response.statusCode);
 
-    if (response.statusCode == 200) {
+    if (response.statusCode < 300) {
       _answerController.clear();
       final responseData = json.decode(response.body);
       setState(() {

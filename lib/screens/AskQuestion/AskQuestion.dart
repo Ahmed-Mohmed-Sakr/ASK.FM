@@ -23,21 +23,26 @@ class _AskQuestionScreenState extends State<AskQuestionScreen> {
         _isLoading = true;
       });
       final prefs = await SharedPreferences.getInstance();
-      final userToken = prefs.getString('userToken');
-      final userID = prefs.getString("id");
+      final userToken = await prefs.getString('userToken');
+      final userID = await prefs.getString("id");
+
+      print(userToken);
+      print(userID);
+      print(_question);
       // send qution now
       final client = BrowserClient();
       final response = await client.post(
         Uri.parse('https://askme-service.onrender.com/questions'),
-        headers: {'Authorization': 'Bearer $userToken'},
+        headers: {'Authorization': 'Bearer $userToken',
+          'Content-Type': 'application/json'},
         body: json.encode({
-          'recipientId': userID,
-          'questionText': 'thanks',
+          'recipientId': int.parse(userID!),
+          'questionText': _question,
           'anonymity': true
         }),
       );
-      print(response.body);
-      if (response.statusCode == 200) {
+      print(response.statusCode);
+      if (response.statusCode < 300) {
         Navigator.pop(context, true);
       } else {
         setState(() {

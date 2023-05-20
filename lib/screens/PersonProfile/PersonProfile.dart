@@ -73,7 +73,8 @@ class _PersonProfileScreenState extends State<PersonProfileScreen> {
     final client = BrowserClient();
     final response = await client.post(
       Uri.parse('https://askme-service.onrender.com/questions'),
-      headers: {'Authorization': 'Bearer $userToken'},
+      headers: {'Authorization': 'Bearer $userToken',
+        'Content-Type': 'application/json'},
       body: json.encode({
         'recipientId': widget.person['id'],
         'questionText': questionText,
@@ -81,7 +82,7 @@ class _PersonProfileScreenState extends State<PersonProfileScreen> {
       }),
     );
 
-    if (response.statusCode == 201) {
+    if (response.statusCode < 300) {
       setState(() {
         _fetchQuestions();
         _errorMessage = "DONE";
