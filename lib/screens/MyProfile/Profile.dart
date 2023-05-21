@@ -175,9 +175,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
                               ),
                             )
                                 .then((value) {
-                              if (value == true) {
+                              // if (value == true) {
                                 _fetchProfile();
-                              }
+                              // }
                             });
                           },
                         );

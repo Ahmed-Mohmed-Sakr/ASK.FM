@@ -84,7 +84,8 @@ class _PersonProfileScreenState extends State<PersonProfileScreen> {
 
     if (response.statusCode < 300) {
       setState(() {
-        _fetchQuestions();
+        // _fetchQuestions();
+        _searchQuery="";
         _errorMessage = "DONE";
         _isLoading = false;
       });
